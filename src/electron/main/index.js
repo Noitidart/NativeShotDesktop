@@ -11,9 +11,23 @@ import url from 'url'
 
 const gElectronComm = new ElectronServer(exports, function(channel) {
     console.log('server side handshake happend for channel:', channel);
+
+    // // test to call into main, and not get a return value
+    callInChannel(channel, 'testNoReturn2', 1);
+
+    // // test to call into main, and get a return value
+    callInChannel(channel, 'testReturn2', 1, function(arg) {
+        console.log('back in main testReturn2, arg:', arg);
+    });
+
+    // test to call into main, and get callbacks, then fianlly return value
+    callInChannel(channel, 'testReportProgress2', undefined, function(arg) {
+        console.log('back in main testReportProgress2, arg:', arg);
+    });
+
 }); // eslint-disable-line no-unused-vars
-export const callInPort = callInTemplate.bind(null, gElectronComm, null);
-export const callIn = (...args) => new Promise(resolve => exports['callIn' + args.shift()](...args, val=>resolve(val))); // must pass undefined for aArg if one not provided, due to my use of spread here. had to do this in case first arg is aMessageManagerOrTabId
+const callInChannel = callInTemplate.bind(null, gElectronComm, null); // eslint-disable-line no-unused-vars
+// export const callIn = (...args) => new Promise(resolve => exports['callIn' + args.shift()](...args, val=>resolve(val))); // must pass undefined for aArg if one not provided, due to my use of spread here. had to do this in case first arg is aMessageManagerOrTabId
 
 let mainWindow;
 
@@ -34,6 +48,7 @@ function getPath(...strs) {
     });
 }
 
+// these three are setup to testing app calling into main
 export function testNoReturn(arg) {
     console.log('in testNoReturn, arg:', arg);
 }

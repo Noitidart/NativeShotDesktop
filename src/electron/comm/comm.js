@@ -56,7 +56,7 @@ class Base {
         return [ cbid, val ];
     }
     // reportProgress should this.sendMessage with degined/expected/signatured-above ...restargs
-    reportProgess(aProgressArg) { // always gets manually .bind'ed
+    reportProgress(aProgressArg) { // always gets manually .bind'ed
         // NOTE: aProgressArg must be an object! so dever using this must know that to report progress they must pass an object!
         let { THIS, cbid } = this;
         aProgressArg.__PROGRESS = 1;

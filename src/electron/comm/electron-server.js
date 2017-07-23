@@ -99,8 +99,8 @@ export class Server extends Base {
         console.log(`Comm.${this.commname} - incoming connect request, channel:`, channel);
         this.channels[channel] = e.sender;
         ipcMain.on(channel, this.controller);
+        this.sendMessage(channel, HANDSHAKE); // do this before triggering onHandshake on serverside, because in server side handshake their might be some callInChannel(channel, ...) and we wand handshake to trigger on client side before these callInChannel calls
         if (this.onHandshake) this.onHandshake(channel);
-        this.sendMessage(channel, HANDSHAKE);
     }
     disconnector = (e, channel) => {
         console.log(`Comm.${this.commname} - incoming disconnect request, static channel:`, channel, 'e:', e);
