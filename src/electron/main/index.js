@@ -3,7 +3,7 @@
 import { app, BrowserWindow } from 'electron'
 import { Server as ElectronServer } from '../comm/electron-server'
 import { callInTemplate } from '../comm/comm'
-import { wait } from 'cmn/all'
+import { wait } from 'cmn/all' // eslint-disable-line no-unused-vars
 
 import { Server as ReduxServer } from '../comm/redux'
 import * as reducers from '../flows'
@@ -75,13 +75,18 @@ export const gReduxServer = new ReduxServer(reducers, function(state, dispatch) 
     console.log('server side element re-rendered, state:', state);
 });
 
+console.log('gReduxServer:', gReduxServer);
+
 (async function() {
-    await wait(5000);
-    console.log('gDispatch:', gDispatch);
+    await wait(10000);
     const info = gDispatch(addTodo('say hi'));
     console.log('info:', info);
 
-    await wait(5000);
+    await wait(1000);
+    const info2 = gDispatch(addTodo('say bye'));
+    console.log('info2:', info2);
+
+    await wait(10000);
     gDispatch(removeTodo(info.id));
 })();
 

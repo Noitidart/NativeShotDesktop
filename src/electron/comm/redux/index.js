@@ -15,24 +15,16 @@ import { removeElement, addElement } from './elements'
 
 import Proxy from './Proxy'
 
-function renderProxiedElement(callInReduxPath, component, container, wanted) {
+function renderProxiedElement(callInReduxScope, server_name, component, container, wanted) {
     // this should imported and executed in the dom where we want to render the html element
     // if ReduxServer is in same scope, set callInReduxPath to gReduxServer
-    // resolves with elementid - so dever can use with unmountProxiedElement(id)
+    // resolves with elementid - so dever can use with dispatch(removeElement(id)) --- actually i changed it, it resolves with a helper function which internally does dispatch(removeElement(id)), see link7884721
     // component - react class
     // container - dom target - document.getElementById('root')
     // wanted - wanted state
-    // store.dispatch(addElement('todo', component.name, wanted));
+    // store.dispatch(addElement('todo', component.name, wanted));    if (Array.isArray(callInReduxPath)) {
 
-    let callInRedux;
-    if (Array.isArray(callInReduxPath)) {
-        let [callInReduxScope, server_name] = callInReduxPath;
-        callInRedux = (method, ...args) => callInReduxScope(server_name + '.' + method, ...args);
-    } else {
-        // no need for comm, we are in same scope
-        let server = callInReduxPath
-        callInRedux = (method, ...args) => server[method](...args);
-    }
+    const callInRedux = (method, ...args) => callInReduxScope(server_name + '.' + method, ...args);
 
     let resolveAfterMount; // resolves with unmount function
     const promise = new Promise(resolve => {
@@ -47,17 +39,16 @@ function renderProxiedElement(callInReduxPath, component, container, wanted) {
         callInRedux('dispatch', action);
     };
 
-    const unmountProxiedElement = function(nounmount, nodispatch) {
-        console.log('DOING unmountProxiedElement');
-        if (!nodispatch) dispatch(removeElement(id));
-        if (!nounmount) unmountComponentAtNode(container);
-    };
+    // const unmountProxiedElement = function(dontUnmount, dontDispatch) {
+    //     console.log('DOING unmountProxiedElement');
+    //     if (!dontDispatch) dispatch(removeElement(id, dontUnmount));
+    // };
 
     const progressor = function(aArg) {
-        let { __PROGRESS } = aArg;
+        const { __PROGRESS } = aArg;
 
         if (__PROGRESS) {
-            let { state } = aArg;
+            const { state } = aArg;
             if (id === undefined) {
                 id = aArg.id;
                 const setSetState = aSetState => {
@@ -65,26 +56,21 @@ function renderProxiedElement(callInReduxPath, component, container, wanted) {
                     setState(() => state);
                 };
                 render(<Proxy Component={component} id={id} setSetState={setSetState} dispatch={dispatch} />, container);
-                resolveAfterMount(unmountProxiedElement);
+                resolveAfterMount(dontUnmount => dispatch(removeElement(id, dontUnmount))); // link7884721
             } else {
                 setState(() => state);
             }
         } else {
             // unmounted - server was shutdown by unregister()
             console.log('ok unmounting in dom, aArg:', aArg);
-            unmountComponentAtNode(container);
+            if (!aArg || !aArg.dontUnmount) unmountComponentAtNode(container);
         }
     };
 
-    if (Array.isArray(callInReduxPath)) {
-        callInRedux('addElement', { wanted }, progressor);
-    } else {
-        // no need for comm, we are in same scope
-        callInRedux('addElement', { wanted }, fakeprog => { fakeprog.__PROGRESS = 1; progressor(fakeprog); }).then(progressor); // the .then is so it unmounts, as addElement returns promise, to keep Comm aReportProgress alive
-    }
+    callInRedux('addElement', { wanted }, progressor);
 
     // window is defintiely available, as renderProxiedElement is only used in DOM
-    window.addEventListener('unload', () => unmountProxiedElement(true), false);
+    window.addEventListener('unload', ()=>dispatch(removeElement(id, true)), false);
 
     return promise;
 }
@@ -93,6 +79,7 @@ class Server {
     // store = undefined
     // serverElement
     nextelementid = 0
+    removeElement = {} // holds promises, to trigger to remove element
     constructor(reducers, serverElement) {
 
         // this.store = createStore(reducer, undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
@@ -109,27 +96,37 @@ class Server {
         const state = this.store.getState();
         const { elements } = state;
 
-        // TODO: shallowEqual here to figure out if i should update anything
+        // check if any element was removed, if so then trigger this.removeElement which will resolve its hanging promise
+        for (const id of Object.keys(this.removeElement)) {
+            if (!(id in elements)) {
+                this.removeElement(id);
+            }
+        }
 
+        // TODO: shallowEqual here to figure out if i should update anything
         for (const { /*id,*/ wanted, setState } of elements) {
             setState(buildWantedState(wanted, state));
         }
-
         this.serverElement(state, this.store.dispatch); // equilavent of serverElement.setState(state)
     }
-    addElement(aArg, aReportProgress, ...args) {
-        console.log('in addElement, aArg:', aArg, 'aReportProgress:', aReportProgress, 'args:', args);
+    addElement = (aArg, aReportProgress/*, ...args*/) => {
+        // console.log('in addElement, aArg:', aArg, 'aReportProgress:', aReportProgress, 'args:', args);
+        console.log('in addElement, aArg:', aArg);
         const id = (this.nextelementid++).toString(); // toString because it is used as a key in react - crossfile-link3138470
         return new Promise( resolve => { // i need to return promise, because if it is Comm, a promise will keep it alive so it keeps responding to aReportProgress
             const { wanted } = aArg;
             const setState = state => aReportProgress({ id, state });
             this.store.dispatch(addElement(id, wanted, setState));
 
-            this.removeElement[id] = () => resolve({destroyed:true});
+            // this.removeElement[id] is only to be called by render as a result of dispatch(removeElement)
+            this.removeElement[id] = () => {
+                delete this.removeElement[id];
+                resolve({ destroyed:true });
+            };
         });
     }
     dispatch(aArg) {
-        let action = aArg;
+        const action = aArg;
         this.store.dispatch(action);
     }
 }
@@ -154,5 +151,4 @@ function buildWantedState(wanted, state) {
     return wanted_state;
 }
 
-export { Server }
-export default renderProxiedElement
+export { Server, renderProxiedElement }

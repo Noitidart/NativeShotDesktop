@@ -34,6 +34,7 @@
         "no-useless-escape": 2,
         "require-yield": 0,
         "no-undef": 2,
-        "react/prop-types": 0
+        "react/prop-types": 0,
+        "no-unused-vars": 1
     }
 }

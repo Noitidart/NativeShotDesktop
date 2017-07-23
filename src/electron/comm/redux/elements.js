@@ -12,10 +12,11 @@ export function addElement(id, wanted, setState) {
 }
 
 const REMOVE_ELEMENT = 'REMOVE_ELEMENT';
-export function removeElement(id) {
+export function removeElement(id, dontUnmount) {
     return {
         type: REMOVE_ELEMENT,
-        id
+        id,
+        dontUnmount
     }
 }
 

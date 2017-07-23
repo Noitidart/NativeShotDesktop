@@ -13,15 +13,15 @@ export default class Proxy extends Component {
     initialState = {}
     componentDidMount() {
         this.mounted = true;
-        let { setSetState } = this.props;
+        const { setSetState } = this.props;
         setSetState(this.setState.bind(this));
     }
     render() {
-        let { Component, dispatch } = this.props;
-        let state = this.state;
+        const { Component, dispatch } = this.props;
+        const state = this.state;
         if (!this.mounted) {
             // because on mount, state has not yet been received, so dont render
-            return <span />;
+            return null;
         } else {
             return <Component {...state} dispatch={dispatch} />
         }
