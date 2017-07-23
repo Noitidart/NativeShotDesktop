@@ -1,14 +1,14 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
 
 // Proxy is only rendered in html DOM so window exists for sure
 
 export default class Proxy extends Component {
-    static propTypes = {
-        Component: React.Component,
-        id: PropTypes.string,
-        setSetState: PropTypes.func.isRequired,
-        dispatch: PropTypes.func.isRequired
-    }
+    // static propTypes = {
+    //     Component: React.Component,
+    //     id: PropTypes.string,
+    //     setSetState: PropTypes.func.isRequired,
+    //     dispatch: PropTypes.func.isRequired
+    // }
     mounted = false
     initialState = {}
     componentDidMount() {

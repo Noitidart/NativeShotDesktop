@@ -1,9 +1,9 @@
 // TODO: figure out how to make redux-offline only persist some keys, like there is no reason to persist messages
-
-import React, { Component, PropTypes } from 'react'
+import React from 'react'
 import { combineReducers, createStore } from 'redux'
 import { render, unmountComponentAtNode } from 'react-dom'
-import { Provider, connect } from 'react-redux'
+import { shallowEqual } from 'cmn/recompose' // eslint-disable-line no-unused-vars
+import { deepAccessUsingString } from 'cmn/all'
 // import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 // import { offline } from 'redux-offline'
 // import offlineConfigDefault from 'redux-offline/lib/defaults'
@@ -13,37 +13,7 @@ import { Provider, connect } from 'react-redux'
 import elements from './elements'
 import { removeElement, addElement } from './elements'
 
-import ElementServer from './ElementServer'
 import Proxy from './Proxy'
-
-// App is server that all proxies connect to
-const App = connect(
-    function(state) {
-        return {
-            elements: state.elements
-        }
-    }
-)(class AppClass extends Component {
-    // crossfile-link3138470
-    static propTypes = {
-        elements: PropTypes.array
-    }
-    render() {
-        let { elements } = this.props;
-        return (
-            <div>
-                { elements.map(element => <ElementServer key={element.id} {...element} />) }
-            </div>
-        )
-    }
-});
-
-// export function unmountProxiedElement(id, container) {
-//     // TODO:
-//     console.log('unmount element id:', id);
-
-//     if (container) unmountComponentAtNode(container);
-// }
 
 function renderProxiedElement(callInReduxPath, component, container, wanted) {
     // this should imported and executed in the dom where we want to render the html element
@@ -119,28 +89,39 @@ function renderProxiedElement(callInReduxPath, component, container, wanted) {
     return promise;
 }
 
-export class Server {
-    store = undefined
+class Server {
+    // store = undefined
+    // serverElement
     nextelementid = 0
-    constructor(reducers) {
+    constructor(reducers, serverElement) {
 
         // this.store = createStore(reducer, undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
         // this.store = createStore(combineReducers(reducers), undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
         // this.store = createStore(combineReducers(reducers), undefined, applyMiddleware(thunk));
         this.store = createStore(combineReducers({ ...reducers, elements }));
 
-        let container = document.createElement('div');
-        container.classList.add('redux-server');
-        document.body.appendChild(container);
-
-        render(<Provider store={this.store}><App/></Provider>, container);
+        this.store.subscribe(this.render);
+        this.serverElement = serverElement;
+        this.render();
     }
-    removeElement = {};
+    render = () => {
+        console.log('IN SERVER RENDER');
+        const state = this.store.getState();
+        const { elements } = state;
+
+        // TODO: shallowEqual here to figure out if i should update anything
+
+        for (const { /*id,*/ wanted, setState } of elements) {
+            setState(buildWantedState(wanted, state));
+        }
+
+        this.serverElement(state, this.store.dispatch); // equilavent of serverElement.setState(state)
+    }
     addElement(aArg, aReportProgress, ...args) {
         console.log('in addElement, aArg:', aArg, 'aReportProgress:', aReportProgress, 'args:', args);
         const id = (this.nextelementid++).toString(); // toString because it is used as a key in react - crossfile-link3138470
         return new Promise( resolve => { // i need to return promise, because if it is Comm, a promise will keep it alive so it keeps responding to aReportProgress
-            let { wanted } = aArg;
+            const { wanted } = aArg;
             const setState = state => aReportProgress({ id, state });
             this.store.dispatch(addElement(id, wanted, setState));
 
@@ -153,4 +134,25 @@ export class Server {
     }
 }
 
-export default renderProxiedElement;
+const DOTPATH_AS_PATT = /(.+) as (.+)$/m;
+function buildWantedState(wanted, state) {
+    console.log('state:', state, 'wanted:', wanted);
+    let wanted_state = {};
+    for (let dotpath of wanted) {
+        let name;
+        if (DOTPATH_AS_PATT.test(dotpath)) {
+            // ([, dotpath, name] = DOTPATH_AS_PATT.exec(dotpath));
+            let matches = DOTPATH_AS_PATT.exec(dotpath);
+            dotpath = matches[1];
+            name = matches[2];
+        } else {
+            name = dotpath.split('.');
+            name = name[name.length-1];
+        }
+        wanted_state[name] = deepAccessUsingString(state, dotpath, 'THROW');
+    }
+    return wanted_state;
+}
+
+export { Server }
+export default renderProxiedElement

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import { render } from 'react-dom'
+// import { render } from 'react-dom'
 
 import { Client as ElectronClient } from '../comm/electron-client'
 import { callInTemplate } from '../comm/comm'
-
-import { wait } from 'cmn/all'
 
 import './theme-a.default.css'
 import './index.css'
@@ -42,10 +40,10 @@ class App extends Component {
 // // test to call into main, and not get a return value
 // callInBackground('testNoReturn', 1);
 
-// test to call into main, and get a return value
-callInBackground('testReturn', 1, function(arg) {
-    console.log('back in app, arg:', arg);
-});
+// // test to call into main, and get a return value
+// callInBackground('testReturn', 1, function(arg) {
+//     console.log('back in app, arg:', arg);
+// });
 
 // // test to call into main, and get callbacks, then fianlly return value
 // callInBackground('testReportProgress', undefined, function(arg) {
@@ -53,22 +51,23 @@ callInBackground('testReturn', 1, function(arg) {
 // });
 
 
-// these three are setup to testing app calling into main
-export function testNoReturn2(arg) {
-    console.log('in testNoReturn2, arg:', arg);
-}
+// // these three are setup to testing app calling into main
+// export function testNoReturn2(arg) {
+//     console.log('in testNoReturn2, arg:', arg);
+// }
 
-export function testReturn2(arg) {
-    console.log('in testReturn2! arg:', arg);
-    return 'test';
-}
+// export function testReturn2(arg) {
+//     console.log('in testReturn2! arg:', arg);
+//     return 'test';
+// }
 
-export async function testReportProgress2(arg, reportProgress) {
-    console.log('in testReportProgress2');
-    reportProgress({ step:1 });
-    reportProgress({ step:2 });
-    await wait(1000);
-    return { step:'done' };
-}
+// export async function testReportProgress2(arg, reportProgress) {
+//     console.log('in testReportProgress2');
+//     reportProgress({ step:1 });
+//     reportProgress({ step:2 });
+//     await wait(1000);
+//     return { step:'done' };
+// }
 
-render(<App/>, document.getElementById('root'))
+console.log('App:', App);
+// render(<App/>, document.getElementById('root'))
