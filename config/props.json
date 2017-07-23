@@ -11,7 +11,7 @@
     },
     "electron": {
         "replace": {
-
+            "~ADDON_NAME~": "Cross Browser Extension"
         }
     }
 }

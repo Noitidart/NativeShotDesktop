@@ -20,7 +20,7 @@ module.exports = function (env) {
         devtool: 'cheap-module-source-map',
         entry: {
             main: './src/electron/main/index.js',
-            // app: './src/electron/app/index.js',
+            app: './src/electron/app/index.js',
             // appframe: './src/electron/app/appframe.js',
             // contentscript: './src/electron/contentscript/index.js'
         },

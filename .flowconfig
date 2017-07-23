@@ -5,6 +5,9 @@
 module.name_mapper.extension='png' -> '<PROJECT_ROOT>/flow/WebpackAsset.js.flow'
 module.name_mapper.extension='jpg' -> '<PROJECT_ROOT>/flow/WebpackAsset.js.flow'
 
+esproposal.class_static_fields=enable
+esproposal.class_instance_fields=enable
+
 suppress_type=$FlowIssue
 suppress_type=$FlowFixMe
 suppress_type=$FixMe

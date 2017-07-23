@@ -35,7 +35,8 @@
     "flow-bin": "^0.51.0",
     "string-replace-loader": "^1.0.5",
     "style-loader": "^0.16.1",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "webpack-target-electron-renderer": "^0.4.0"
   },
   "dependencies": {
     "babel-runtime": "^6.23.0",
@@ -45,6 +46,6 @@
     "react-redux": "^5.0.5",
     "redux": "^3.7.2",
     "redux-offline": "^2.0.0",
-    "redux-thunk": "^2.2.0"
+    "uuid": "^3.1.0"
   }
 }

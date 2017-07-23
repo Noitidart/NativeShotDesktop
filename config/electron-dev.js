@@ -23,13 +23,17 @@ module.exports = function (env) {
         devtool: 'cheap-module-source-map',
         entry: {
             main: './src/electron/main/index.js',
-            // app: './src/electron/app/index.js',
+            app: './src/electron/app/index.js',
             // appframe: './src/electron/app/appframe.js',
             // contentscript: './src/electron/contentscript/index.js'
         },
         output: {
             path: path.join(__dirname, '../dist/electron'),
             filename: '[name]/index.bundle.js'
+        },
+        node: {
+            __dirname: false,
+            __filename: false
         },
         resolve: {
             extensions: ['.js']
@@ -43,6 +47,7 @@ module.exports = function (env) {
             ]
         },
         plugins: [
+            new webpack.IgnorePlugin(new RegExp("^(fs|ipc)$")),
             new CopyWebpackPlugin([
                 { from: './src/electron', ignore: ['*.js', '*.css'], transform: (content, path) => /(svg|png|jpeg|jpg|gif)$/i.test(path) ? content : content.toString().replace(new RegExp('(?:' + Object.keys(PROPS.replace).join('|') + ')', 'g'), match => PROPS.replace[match]) },
                 // { from: './src/electron/vendor', to: 'vendor/' }
