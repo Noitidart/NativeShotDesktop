@@ -2,7 +2,7 @@
 import React from 'react'
 import { combineReducers, createStore } from 'redux'
 import { render, unmountComponentAtNode } from 'react-dom'
-import { shallowEqual } from 'cmn/recompose' // eslint-disable-line no-unused-vars
+import { shallowEqualDepth } from 'cmn/recompose'
 import { deepAccessUsingString } from 'cmn/all'
 // import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
 // import { offline } from 'redux-offline'
@@ -78,9 +78,11 @@ function renderProxiedElement(callInReduxScope, server_name, component, containe
 class Server {
     // store = undefined
     // serverElement
+    // stateOld = undefined
     nextelementid = 0
     removeElement = {} // holds promises, to trigger to remove element
     constructor(reducers, serverElement) {
+        // server side wantedState
 
         // this.store = createStore(reducer, undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
         // this.store = createStore(combineReducers(reducers), undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
@@ -94,20 +96,42 @@ class Server {
     render = () => {
         console.log('IN SERVER RENDER');
         const state = this.store.getState();
+        const { stateOld={} } = this;
         const { elements } = state;
 
-        // check if any element was removed, if so then trigger this.removeElement which will resolve its hanging promise
-        for (const id of Object.keys(this.removeElement)) {
-            if (!(id in elements)) {
-                this.removeElement(id);
+        const changed = {};
+        for (const key of Object.keys(state)) {
+            if (!shallowEqualDepth(state[key], stateOld[key])) changed[key] = true;
+        }
+
+        if (didWantedChange(['elements'], changed)) {
+            const ids = elements.reduce( (acc, element) => Object.assign(acc, [element.id]:true), {});
+            console.log('ids:', ids);
+            for (const id of Object.keys(this.removeElement)) {
+                if (!(id in ids)) {
+                    this.removeElement(id);
+                }
             }
         }
 
         // TODO: shallowEqual here to figure out if i should update anything
         for (const { /*id,*/ wanted, setState } of elements) {
-            setState(buildWantedState(wanted, state));
+
+            if (didWantedChange(wanted, changed)) {
+                const wantedState = buildWantedState(wanted, state);
+                if (wantedState) setState(wantedState);
+            }
         }
-        this.serverElement(state, this.store.dispatch); // equilavent of serverElement.setState(state)
+
+        {
+            const wanted = this.serverElement.wantedState;
+            if (didWantedChange(wanted, changed)) {
+                const wantedState = buildWantedState(wanted, state);
+                if (wantedState) this.serverElement(wantedState, this.store.dispatch); // equilavent of serverElement.setState(state)
+            }
+        }
+
+        this.stateOld = state;
     }
     addElement = (aArg, aReportProgress/*, ...args*/) => {
         // console.log('in addElement, aArg:', aArg, 'aReportProgress:', aReportProgress, 'args:', args);
@@ -131,23 +155,39 @@ class Server {
     }
 }
 
-const DOTPATH_AS_PATT = /(.+) as (.+)$/m;
-function buildWantedState(wanted, state) {
-    console.log('state:', state, 'wanted:', wanted);
-    let wanted_state = {};
-    for (let dotpath of wanted) {
-        let name;
-        if (DOTPATH_AS_PATT.test(dotpath)) {
-            // ([, dotpath, name] = DOTPATH_AS_PATT.exec(dotpath));
-            let matches = DOTPATH_AS_PATT.exec(dotpath);
-            dotpath = matches[1];
-            name = matches[2];
-        } else {
-            name = dotpath.split('.');
-            name = name[name.length-1];
+function didWantedChange(wanted, changeds) {
+    if (!wanted) return false;
+    for (const key of wanted) {
+        if (key in changeds) {
+            return true;
         }
+    }
+    return false;
+}
+
+// const DOTPATH_AS_PATT = /(.+) as (.+)$/m;
+function buildWantedState(wanted, state) {
+    // console.log('wanted:', wanted);
+    // console.log('state:', state, 'wanted:', wanted);
+    const wanted_state = {};
+    if (!wanted) return null;
+    let somethingWanted = false;
+    for (const dotpath of wanted) {
+        // let name;
+        // if (DOTPATH_AS_PATT.test(dotpath)) {
+        //     // ([, dotpath, name] = DOTPATH_AS_PATT.exec(dotpath));
+        //     let matches = DOTPATH_AS_PATT.exec(dotpath);
+        //     dotpath = matches[1];
+        //     name = matches[2];
+        // } else {
+        //     name = dotpath.split('.');
+        //     name = name[name.length-1];
+        // }
+        const name = dotpath.substr(dotpath.lastIndexOf('.') + 1);
+        somethingWanted = true;
         wanted_state[name] = deepAccessUsingString(state, dotpath, 'THROW');
     }
+    if (!somethingWanted) return null;
     return wanted_state;
 }
 

@@ -69,24 +69,23 @@ function getPath(...strs) {
 //     return { step:'done' };
 // }
 
-let gDispatch; // eslint-disable-line no-unused-vars
-export const gReduxServer = new ReduxServer(reducers, function(state, dispatch) {
-    gDispatch = dispatch;
+export const gReduxServer = new ReduxServer(reducers, function(state/*, dispatch*/) {
     console.log('server side element re-rendered, state:', state);
 });
+const dispatch = gReduxServer.store.dispatch;
 
 console.log('gReduxServer:', gReduxServer);
 
 (async function() {
     await wait(10000);
-    const info = gDispatch(addTodo('say hi'));
+    const info = dispatch(addTodo('say hi'));
     console.log('info:', info);
 
     await wait(1000);
-    const info2 = gDispatch(addTodo('say bye'));
+    const info2 = dispatch(addTodo('say bye'));
     console.log('info2:', info2);
 
     await wait(10000);
-    gDispatch(removeTodo(info.id));
+    dispatch(removeTodo(info.id));
 })();
 
