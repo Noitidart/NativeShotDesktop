@@ -98,6 +98,7 @@ class Server {
         const state = this.store.getState();
         const { stateOld={} } = this;
         const { elements } = state;
+        const { elements:elementsOld } = stateOld;
 
         const changed = {};
         for (const key of Object.keys(state)) {
@@ -114,10 +115,14 @@ class Server {
             }
         }
 
-        // TODO: shallowEqual here to figure out if i should update anything
-        for (const { /*id,*/ wanted, setState } of elements) {
+        for (const { id, wanted, setState } of elements) {
 
-            if (didWantedChange(wanted, changed)) {
+            const justAdded = !elementsOld.find( element => element.id === id );
+            if (justAdded) {
+                // do setState, this is needed for triggering the mount
+                const wantedState = buildWantedState(wanted, state);
+                setState(wantedState || {});
+            } else if (didWantedChange(wanted, changed)) {
                 const wantedState = buildWantedState(wanted, state);
                 if (wantedState) setState(wantedState);
             }
@@ -127,7 +132,7 @@ class Server {
             const wanted = this.serverElement.wantedState;
             if (didWantedChange(wanted, changed)) {
                 const wantedState = buildWantedState(wanted, state);
-                if (wantedState) this.serverElement(wantedState, this.store.dispatch); // equilavent of serverElement.setState(state)
+                if (wantedState) this.serverElement(wantedState, stateOld, this.store.dispatch); // equilavent of serverElement.setState(state)
             }
         }
 
