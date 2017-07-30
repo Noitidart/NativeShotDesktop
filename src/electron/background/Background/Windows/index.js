@@ -47,7 +47,7 @@ function update(windows: WindowsShape, windowsOld: WindowsShape) {
                     }
                     case WINDOW_STATES.VISIBLE: {
                         window.show();
-                        if (window.isMinimized()) window.restore();
+                        // if (window.isMinimized()) window.restore(); // seems this is not needed - tested on win10
 
                         break;
                     }
@@ -72,4 +72,4 @@ function update(windows: WindowsShape, windowsOld: WindowsShape) {
 }
 
 export type { WindowName }
-export { update }
+export { update, WINDOW_REFS }
