@@ -30,7 +30,7 @@ function Background(state: State, stateOld: State, dispatch) {
     const { windows } = state;
     const { windows:windowsOld } = stateOld;
     if (windows !== windowsOld) { // safe to do reference test here to detect change as this is in Background and Server is in background
-        Windows.update(windows, windowsOld);
+        Windows.update(windows, windowsOld, dispatch);
     }
 }
 

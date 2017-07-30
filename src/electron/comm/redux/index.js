@@ -125,18 +125,17 @@ class Server {
 
         {
             const wanted = this.serverElement.wantedState;
-            console.log('serverElement.wanted:', wanted);
+            // console.log('serverElement.wanted:', wanted);
             if (this.serverElementDidNotMount) {
                 delete this.serverElementDidNotMount;
                 const wantedState = buildWantedState(wanted, state) || {}; // the || {} is only for when justAdded/serverElement just mounting
                 this.serverElement(wantedState, stateOld, this.store.dispatch); // equilavent of serverElement.setState(state)
             } else if (didWantedChange(wanted, changed)) {
-                console.log('will get wantedState and render background element maybe');
+                // console.log('will get wantedState and render background element maybe');
                 const wantedState = buildWantedState(wanted, state);
                 if (wantedState) this.serverElement(wantedState, stateOld, this.store.dispatch); // equilavent of serverElement.setState(state)
-            } else {
-                console.log('will not render background element as no change');
             }
+            // else { console.log('will not render background element as no change'); }
         }
 
         this.stateOld = state;
