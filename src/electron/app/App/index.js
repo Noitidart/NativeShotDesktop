@@ -12,9 +12,6 @@ class App extends Component<void, Props, void> {
     }
     useThemeB = () => this.setState(()=>({ theme:'./theme-b' }));
     useThemeDefault = () => this.setState(()=>({ theme:undefined }));
-    componentDidMount() {
-        document.title = 'NativeShot | Dashboard'
-    }
     render() {
         const { todos=[] } = this.props;
         const { theme } = this.state;

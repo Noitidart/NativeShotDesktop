@@ -14,7 +14,8 @@ const WINDOW_INFOS:WindowInfos = {
         backgroundColor: '#CCCCCC',
         width: 600,
         height: 600,
-        icon: getFilePath('icons', 'icon16.png')
+        icon: getFilePath('icons', 'icon16.png'),
+        title: 'NativeShot | Dashboard'
     }
 }
 
