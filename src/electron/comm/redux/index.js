@@ -91,10 +91,11 @@ class Server {
 
         this.store.subscribe(this.render);
         this.serverElement = serverElement;
+        this.serverElementDidMount = false;
         this.render();
     }
     render = () => {
-        console.log('IN SERVER RENDER');
+        // console.log('IN SERVER RENDER');
         const state = this.store.getState();
         const { stateOld={} } = this;
         const { elements } = state;
@@ -102,12 +103,15 @@ class Server {
 
         const changed = {};
         for (const key of Object.keys(state)) {
-            if (!shallowEqualDepth(state[key], stateOld[key])) changed[key] = true;
+            // console.log(`comparing if "${key}" changed in state`);
+            // if (!shallowEqualDepth(state[key], stateOld[key])) changed[key] = true;
+            if (state[key] !== stateOld[key]) changed[key] = true; // as in server side, i can do reference checking, as i am careful in the reducers to return the same state if no change is needed
+            // console.log(key in changed ? 'yes it changed!' : 'no it didnt change', 'state:', state[key], 'stateOld:', stateOld[key]);
         }
 
         if (didWantedChange(['elements'], changed)) {
             const ids = elements.reduce( (acc, element) => Object.assign(acc, [element.id]:true), {});
-            console.log('ids:', ids);
+            // console.log('ids:', ids);
             for (const id of Object.keys(this.removeElement)) {
                 if (!(id in ids)) {
                     this.removeElement(id);
@@ -120,8 +124,8 @@ class Server {
             const justAdded = !elementsOld.find( element => element.id === id );
             if (justAdded) {
                 // do setState, this is needed for triggering the mount
-                const wantedState = buildWantedState(wanted, state);
-                setState(wantedState || {});
+                const wantedState = buildWantedState(wanted, state) || {}; // the || {} is only for when justAdded/serverElement just mounting
+                setState(wantedState);
             } else if (didWantedChange(wanted, changed)) {
                 const wantedState = buildWantedState(wanted, state);
                 if (wantedState) setState(wantedState);
@@ -130,9 +134,17 @@ class Server {
 
         {
             const wanted = this.serverElement.wantedState;
-            if (didWantedChange(wanted, changed)) {
+            console.log('serverElement.wanted:', wanted);
+            if (!this.serverElementDidMount) {
+                this.serverElementDidMount = true;
+                const wantedState = buildWantedState(wanted, state) || {}; // the || {} is only for when justAdded/serverElement just mounting
+                this.serverElement(wantedState, stateOld, this.store.dispatch); // equilavent of serverElement.setState(state)
+            } else if (didWantedChange(wanted, changed)) {
+                console.log('will get wantedState and render background element maybe');
                 const wantedState = buildWantedState(wanted, state);
                 if (wantedState) this.serverElement(wantedState, stateOld, this.store.dispatch); // equilavent of serverElement.setState(state)
+            } else {
+                console.log('will not render background element as no change');
             }
         }
 
@@ -140,7 +152,7 @@ class Server {
     }
     addElement = (aArg, aReportProgress/*, ...args*/) => {
         // console.log('in addElement, aArg:', aArg, 'aReportProgress:', aReportProgress, 'args:', args);
-        console.log('in addElement, aArg:', aArg);
+        // console.log('in addElement, aArg:', aArg);
         const id = (this.nextelementid++).toString(); // toString because it is used as a key in react - crossfile-link3138470
         return new Promise( resolve => { // i need to return promise, because if it is Comm, a promise will keep it alive so it keeps responding to aReportProgress
             const { wanted } = aArg;

@@ -30,7 +30,7 @@ export class Server extends Base {
     doSendMessageMethod(aTransfers, payload, channel) { // this defines what `aClientId` should be in crossfile-link183848 - so this defines what "...restargs" should be "a channel OR a channel id"
         // aClientId is aChannelOrChannelId
         // webext channels does not support transfering
-        console.log('doing send on channel:', channel, 'payload:', payload); // this.channels[channel].send
+        // console.log('doing send on channel:', channel, 'payload:', payload); // this.channels[channel].send
         this.channels[channel].send(channel, payload);
     }
     getControllerPayload(e, payload) {
@@ -96,7 +96,7 @@ export class Server extends Base {
         else throw new Error(`Channel by name of "${channel}" not found!`);
     }
     connector = (e, channel) => {
-        console.log(`Comm.${this.commname} - incoming connect request, channel:`, channel);
+        // console.log(`Comm.${this.commname} - incoming connect request, channel:`, channel);
         this.channels[channel] = e.sender;
         ipcMain.on(channel, this.controller);
         this.sendMessage(channel, HANDSHAKE); // do this before triggering onHandshake on serverside, because in server side handshake their might be some callInChannel(channel, ...) and we wand handshake to trigger on client side before these callInChannel calls

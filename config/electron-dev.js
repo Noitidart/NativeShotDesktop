@@ -53,6 +53,7 @@ module.exports = function (env) {
                 // { from: './src/electron/vendor', to: 'vendor/' }
             ])
         ],
+        target: 'electron',
         externals: [
             (function () {
                 var IGNORES = [ 'electron' ];

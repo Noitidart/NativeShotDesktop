@@ -141,7 +141,7 @@ class Base {
     }
     controller = async (...args) => {
         let payload = this.getControllerPayload(...args);
-        console.log(`Comm.${this.commname} - incoming, payload:`, payload)
+        // console.log(`Comm.${this.commname} - incoming, payload:`, payload)
 
         if (payload.method) {
             if (payload.method === '__HANDSHAKE__') {

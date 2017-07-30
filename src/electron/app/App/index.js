@@ -1,21 +1,22 @@
 import React, { Component } from 'react'
 
-class App extends Component {
-    // static propTypes = {
-    //     core: PropTypes.object,
-    //     todos: PropTypes.array,
-    //     dispatch: PropTypes.func.isRequired
-    // }
+import { State as CoreShape } from '../../flows/core'
+
+type Props = {
+    core: CoreShape,
+    dispatch: * => *
+}
+class App extends Component<void, Props, void> {
     state = {
         theme: undefined
     }
-    useThemeB = () => this.setState(()=>({theme:'./theme-b'}));
-    useThemeDefault = () => this.setState(()=>({theme:undefined}));
+    useThemeB = () => this.setState(()=>({ theme:'./theme-b' }));
+    useThemeDefault = () => this.setState(()=>({ theme:undefined }));
     render() {
-        let { todos /*, dispatch*/ } = this.props;
-        let { theme } = this.state;
+        const { todos=[] } = this.props;
+        const { theme } = this.state;
 
-        let arr = [<span>1</span>, <span>2</span>, <span>3</span>];
+        const arr = [<span>1</span>, <span>2</span>, <span>3</span>];
         return (
             <div>
                 {theme && <link href={theme+'.css2'} rel="stylesheet" /> }
