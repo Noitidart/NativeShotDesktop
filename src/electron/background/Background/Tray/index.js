@@ -1,8 +1,10 @@
 // @flow
 
-import { Tray } from 'electron'
+import { Tray, Menu } from 'electron'
+
 import { getFilePath } from '../../utils'
 import { showWindow } from '../../../flows/windows'
+import { quit } from '../../../flows/quit'
 import { WINDOW_REFS } from '../Windows'
 
 import type { Shape as CoreShape } from '../../../flows/core'
@@ -15,7 +17,15 @@ function init(dispatch, core: CoreShape) {
 
     TRAY = new Tray(getFilePath('icons', 'icon16.png'));
 
-    TRAY.on('click', handleClick.bind(null, dispatch));
+    const launchDashboard = handleClick.bind(null, dispatch);
+    TRAY.on('click', launchDashboard);
+
+    const menu = Menu.buildFromTemplate([
+        { label: 'Dashboard', click:launchDashboard },
+        { label: 'Quit', click:handleQuit.bind(null, dispatch) }
+    ]);
+
+    TRAY.setContextMenu(menu);
 }
 
 function uninit() {
@@ -36,6 +46,10 @@ function handleClick(dispatch/*, e*/) {
         window.show();
         // if (window.isMinimized()) window.restore(); // seems this is not needed - tested on win10
     }
+}
+
+function handleQuit(dispatch) {
+    dispatch(quit());
 }
 
 export { init, uninit }

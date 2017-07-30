@@ -10,9 +10,10 @@ import { createStore, combineReducers } from 'redux'
 import core from './core'
 import tray from './tray'
 import windows from './windows'
+import quit from './quit'
 import elements from '../comm/redux/elements' // ReduxComm reducer
 
-const reducers = combineReducers({core, tray, windows, elements});
+const reducers = combineReducers({core, tray, windows, elements, quit});
 
 
 // const store = createStore(reducer, undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
