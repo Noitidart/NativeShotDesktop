@@ -6,7 +6,9 @@ export type Shape = {
     [key:WindowName]: WindowState // if name does not exist in here, it is a non-existant window (ie: destroyed)
 }
 
-const INITIAL = {}
+const INITIAL = {
+    KEEPALIVE: 'VISIBLE'
+}
 
 const WINDOW_STATES = {
     HIDDEN: 'HIDDEN',

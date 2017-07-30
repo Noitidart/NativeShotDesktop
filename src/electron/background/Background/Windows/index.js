@@ -16,6 +16,9 @@ const WINDOW_INFOS:WindowInfos = {
         height: 600,
         icon: getFilePath('icons', 'icon16.png'),
         title: 'NativeShot | Dashboard'
+    },
+    KEEPALIVE: {
+        show: false
     }
 }
 
@@ -25,8 +28,8 @@ type RelativeUri = string;
 type BrowserWindowConfig = {}; // https://electron.atom.io/docs/api/browser-window/#new-browserwindowoptions
 type WindowInfos = {
     [WindowName]: {
-        url: RelativeUri,
-        noMenu: boolean,
+        url?: RelativeUri,
+        noMenu?: boolean,
         // ...BrowserWindowConfig // this causes build error, but it holds true
     }
 }
@@ -34,7 +37,8 @@ type WindowInfos = {
 type WindowRefs = { [WindowName]:* };
 const WINDOW_REFS:WindowRefs = {}; // to hold to references
 
-function update(windows: WindowsShape, windowsOld: WindowsShape, dispatch) {
+function update(windows: WindowsShape, windowsOld: WindowsShape={}, dispatch) {
+    // default on windowsOld because on mount it is undefined
 
     // state here is windowState
     for ( const [name, state] of Object.entries(windows)) {
@@ -62,20 +66,18 @@ function update(windows: WindowsShape, windowsOld: WindowsShape, dispatch) {
             // if it didnt exist, and it was asked to go to "HIDDEN" redux reducer ignores its, so safe to assume that it is NOT in here with WINDOW_STATES.VISIBLE
             const { noMenu, url, ...browserWindowConfig } = WINDOW_INFOS[name];
             const window = WINDOW_REFS[name] = new BrowserWindow(browserWindowConfig);
-            window.loadURL(url);
+            if (url) window.loadURL(url);
             if (noMenu) window.setMenu(null);
             window.on('close', handleClose.bind(null, dispatch, name));
         }
     }
 
     // check if windows destoroyed
-    if (windowsOld) { // on mount old is undefined
-        for (const name of Object.keys(windowsOld)) {
-            if (!(name in windows)) {
-                const window = WINDOW_REFS[name];
-                window.destroy();
-                delete WINDOW_REFS[name];
-            }
+    for (const name of Object.keys(windowsOld)) {
+        if (!(name in windows)) {
+            const window = WINDOW_REFS[name];
+            window.destroy();
+            delete WINDOW_REFS[name];
         }
     }
 
@@ -83,7 +85,7 @@ function update(windows: WindowsShape, windowsOld: WindowsShape, dispatch) {
 
 function handleClose(dispatch, name, e) {
     e.preventDefault();
-    dispatch(closeWindow(name))
+    dispatch(closeWindow(name));
 }
 
 export type { WindowName }
