@@ -10,7 +10,7 @@ import type { Shape as WindowsShape } from '../../flows/windows'
 type State = {
     tray: TrayShape,
     core: CoreShape,
-    // windows: WindowsShape
+    windows: WindowsShape
 }
 
 Background.wantedState = ['tray', 'core', 'windows'];

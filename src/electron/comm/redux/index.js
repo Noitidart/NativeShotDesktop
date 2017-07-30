@@ -2,15 +2,11 @@
 import React from 'react'
 import { combineReducers, createStore } from 'redux'
 import { render, unmountComponentAtNode } from 'react-dom'
-import { shallowEqualDepth } from 'cmn/recompose'
+// import { shallowEqualDepth } from 'cmn/recompose'
 import { deepAccessUsingString } from 'cmn/all'
-// import { applyMiddleware, combineReducers, compose, createStore } from 'redux'
-// import { offline } from 'redux-offline'
-// import offlineConfigDefault from 'redux-offline/lib/defaults'
-// import thunk from 'redux-thunk'
 
 
-import elements from './elements'
+
 import { removeElement, addElement } from './elements'
 
 import Proxy from './Proxy'
@@ -81,17 +77,12 @@ class Server {
     // stateOld = undefined
     nextelementid = 0
     removeElement = {} // holds promises, to trigger to remove element
-    constructor(reducers, serverElement) {
+    constructor(store, serverElement) {
         // server side wantedState
-
-        // this.store = createStore(reducer, undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
-        // this.store = createStore(combineReducers(reducers), undefined, compose(applyMiddleware(thunk), offline(offlineConfigDefault)));
-        // this.store = createStore(combineReducers(reducers), undefined, applyMiddleware(thunk));
-        this.store = createStore(combineReducers({ ...reducers, elements }));
-
-        this.store.subscribe(this.render);
+        store.subscribe(this.render);
+        this.store = store;
         this.serverElement = serverElement;
-        this.serverElementDidMount = false;
+        this.serverElementDidNotMount = true;
         this.render();
     }
     render = () => {
@@ -135,8 +126,8 @@ class Server {
         {
             const wanted = this.serverElement.wantedState;
             console.log('serverElement.wanted:', wanted);
-            if (!this.serverElementDidMount) {
-                this.serverElementDidMount = true;
+            if (this.serverElementDidNotMount) {
+                delete this.serverElementDidNotMount;
                 const wantedState = buildWantedState(wanted, state) || {}; // the || {} is only for when justAdded/serverElement just mounting
                 this.serverElement(wantedState, stateOld, this.store.dispatch); // equilavent of serverElement.setState(state)
             } else if (didWantedChange(wanted, changed)) {
