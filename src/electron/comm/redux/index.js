@@ -101,13 +101,17 @@ class Server {
         }
 
         if (didWantedChange(['elements'], changed)) {
-            const ids = elements.reduce( (acc, element) => Object.assign(acc, [element.id]:true), {});
-            // console.log('ids:', ids);
+            const elementIds = elements.reduce( (acc, element) => { acc[element.id]=true; return acc; }, {});
+            console.log('removeElement:', this.removeElement, 'ids:', elementIds);
             for (const id of Object.keys(this.removeElement)) {
-                if (!(id in ids)) {
-                    this.removeElement(id);
+                if (!elementIds[id]) {
+                    // this id was removed, so lets trigger the this.removeElement[id] of it
+                    console.log('id:', id, 'this id was removed, so lets trigger the this.removeElement[id] of it');
+                    // TODO: because removeElement is not set until promise returns, AND if remove is called before that promise returns (which i dont think would ever happen BUT still it might depending on if a proxiedMount proxiedUnmount was called, i dont know if its setup for this right now but its possible due to async tick nature).... its a promise, i should do a retry until removeElement comes into existance. the promsie is seen at link8917472
+                    this.removeElement[id]();
                 }
             }
+            console.log('done iter');
         }
 
         for (const { id, wanted, setState } of elements) {
@@ -150,7 +154,7 @@ class Server {
             this.store.dispatch(addElement(id, wanted, setState));
 
             // this.removeElement[id] is only to be called by render as a result of dispatch(removeElement)
-            this.removeElement[id] = () => {
+            this.removeElement[id] = () => { // link8917472 - see this thing is inside of a promise
                 delete this.removeElement[id];
                 resolve({ destroyed:true });
             };

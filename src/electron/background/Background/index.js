@@ -18,7 +18,7 @@ type State = {
 
 Background.wantedState = ['tray', 'core', 'windows', 'quit'];
 function Background(state: State, stateOld: State, dispatch) {
-    console.log('IN BACKGROUND RENDER, state:', state);
+    console.log('IN BACKGROUND RENDER');
 
     const { tray } = state;
     const { tray:trayOld } = stateOld;
