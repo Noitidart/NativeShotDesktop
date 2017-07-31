@@ -1,5 +1,5 @@
 import { wait } from 'cmn/all'
-import { takeEvery, call, put } from 'redux-saga/effects'
+import { takeEvery, take, call, put, select } from 'redux-saga/effects'
 
 export type Shape = number;
 
@@ -14,20 +14,40 @@ export function up() {
 }
 
 const UP_ASYNC = 'UP_ASYNC';
-export function upAsync() {
+export function upAsync(times) {
     return {
-        type: UP_ASYNC
+        type: UP_ASYNC,
+        times
     }
 }
-function* upAsyncHandler() {
-    yield call(wait, 1000);
-    yield put(up());
+
+function* upAsyncWorker(action) {
+    console.log('action:', action);
+    for (let i=0; i<action.times; i++) {
+        const state = yield select();
+        console.log('state:', state);
+        yield call(wait, 1000);
+        yield put(up());
+    }
 }
-function* upAsyncSaga() {
-    yield takeEvery(UP_ASYNC, upAsyncHandler);
+function* upAsyncWatcher() {
+    yield takeEvery(UP_ASYNC, upAsyncWorker);
+}
+sagas.push(upAsyncWatcher);
+
+/*function* upAsyncSaga() {
+    while (true) {
+        const action = yield take(UP_ASYNC);
+        for (let i=0; i<action.times; i++) {
+            const state = yield select();
+            console.log('state:', state);
+            yield call(wait, 1000);
+            yield put(up());
+        }
+    }
 }
 sagas.push(upAsyncSaga);
-
+ */
 const DN = 'DN';
 export function dn() {
     return {

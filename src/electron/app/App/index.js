@@ -20,7 +20,7 @@ class App extends Component<void, Props, State> {
     useThemeB = () => this.setState(()=>({ theme:'./theme-b' }));
     useThemeDefault = () => this.setState(()=>({ theme:undefined }));
     handleUp = () => this.props.dispatch(up());
-    handleUpAsync = () => this.props.dispatch(upAsync());
+    handleUpAsync = () => this.props.dispatch(upAsync(6));
     handleDn = () => this.props.dispatch(dn());
     render() {
         const { counter } = this.props;
