@@ -20,17 +20,20 @@ export function removeElement(id, dontUnmount) {
     }
 }
 
-export default function elements(state=[], action) {
-    let type;
-    ({type, ...action} = action);
+export default function reducer(state=[], action) {
+    const { type, ...rest } = action;
     switch(type) {
         case ADD_ELEMENT: {
-            let element = action;
-            return [...state, element];
+            const element = rest;
+            const { id } = element;
+            const hasElement = state.find( element => element.id === id );
+            return hasElement ? state : [...state, element];
         }
         case REMOVE_ELEMENT: {
-            let { id } = action;
-            return state.filter(element => element.id !== id);
+            const { id } = rest;
+            const stateNew = state.filter(element => element.id !== id);
+            const didRemove = stateNew.length !== state.length;
+            return didRemove ? stateNew : state;
         }
         default:
             return state;
