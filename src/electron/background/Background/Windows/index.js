@@ -67,6 +67,7 @@ function update(windows: WindowsShape, windowsOld: WindowsShape={}, dispatch) {
             const { noMenu, url, ...browserWindowConfig } = WINDOW_INFOS[name];
             const window = WINDOW_REFS[name] = new BrowserWindow(browserWindowConfig);
             if (url) window.loadURL(url);
+            if (url) window.webContents.openDevTools(); // DEBUG: remove on build console.log(bleh)
             if (noMenu) window.setMenu(null);
             window.on('close', handleClose.bind(null, dispatch, name));
         }

@@ -47,6 +47,7 @@
     "recompose": "^0.24.0",
     "redux": "^3.7.2",
     "redux-offline": "^2.0.0",
+    "redux-saga": "^0.15.6",
     "uuid": "^3.1.0"
   }
 }

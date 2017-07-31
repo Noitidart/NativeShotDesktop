@@ -14,6 +14,6 @@ const callInBackground = callInTemplate.bind(null, gBgComm, null, null);
 
 window.addEventListener('DOMContentLoaded', async function() {
     /*const unmount = */ await renderProxiedElement(callInBackground, 'gReduxServer', App, document.getElementById('root'), [
-        'core'
+        'counter'
     ]);
 }, false);
