@@ -24,8 +24,7 @@ module.exports = function (env) {
         entry: {
             background: './src/electron/background/index.js',
             app: './src/electron/app/index.js',
-            // appframe: './src/electron/app/appframe.js',
-            // contentscript: './src/electron/contentscript/index.js'
+            dashboard: './src/electron/dashboard/index.js'
         },
         output: {
             path: path.join(__dirname, '../dist/electron'),
