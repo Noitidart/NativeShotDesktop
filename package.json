@@ -4,6 +4,8 @@
   "private": true,
   "devDependencies": {
     "electron": "^1.7.4",
+    "eslint": "^4.3.0",
+    "eslint-plugin-jsx-a11y": "^6.0.2",
     "foreman": "^2.0.0",
     "react-scripts": "0.8.5"
   },
