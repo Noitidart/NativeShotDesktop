@@ -7,6 +7,29 @@ const BrowserWindow = electron.BrowserWindow;
 const path = require('path');
 const url = require('url');
 
+// Tray icon based on process.platform
+const {Menu, Tray} = require('electron')
+const OS = process.platform
+let tray = null
+
+app.on('ready', () => {
+  //Give each OS a unique tray icon
+    tray = new Tray('./public/icon.png')
+    const contextMenu = Menu.buildFromTemplate([
+      {label: 'Dashboard'},
+      {label: 'Settings'},
+      {label: 'Exit'}
+
+  ])
+
+  tray.on('click',createWindow);
+  // Call this again for Linux because we modified the context menu
+  tray.setContextMenu(contextMenu)
+
+})
+
+// END Tray icon based on process.platform
+
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -33,7 +56,7 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+//app.on('ready', createWindow);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
