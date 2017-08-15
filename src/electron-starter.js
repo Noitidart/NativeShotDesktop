@@ -16,13 +16,13 @@ app.on('ready', () => {
   //Give each OS a unique tray icon
     tray = new Tray('./public/icon.png')
     const contextMenu = Menu.buildFromTemplate([
-      {label: 'Dashboard'},
+      {label: 'Dashboard', click:  function(){
+            createWindow()
+        }},
       {label: 'Settings'},
       {label: 'Exit'}
 
   ])
-
-  tray.on('click',createWindow);
   // Call this again for Linux because we modified the context menu
   tray.setContextMenu(contextMenu)
 
