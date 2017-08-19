@@ -1,6 +1,10 @@
 import React, { Component } from 'react'
+import { HashRouter } from 'react-router-dom'
 
 import { up, upAsync, dn } from '../../flows/counter'
+
+import Header from './Header'
+import Pages from './Pages'
 
 import './theme-default.css'
 import './index.css'
@@ -12,37 +16,32 @@ type Props = {
     dispatch: *
 }
 
-type State = {
-    theme?: string
-}
-
-class Dashboard extends Component<void, Props, State> {
-    state = {
-        theme: undefined
-    }
-    useThemeB = () => this.setState(()=>({ theme:'./Dashboard/theme-b' }));
-    useThemeDefault = () => this.setState(()=>({ theme:undefined }));
+class Dashboard extends Component<void, Props, void> {
     handleUp = () => this.props.dispatch(up());
     handleUpAsync = () => this.props.dispatch(upAsync(6));
     handleDn = () => this.props.dispatch(dn());
     render() {
         const { counter } = this.props;
-        const { theme } = this.state;
 
         const arr = [<span>1</span>, <span>2</span>, <span>3</span>];
         return (
-            <div>
-                {theme && <link href={theme+'.css2'} rel="stylesheet" /> }
-                {arr}
-                <button onClick={this.useThemeB}>Use Theme B</button>
-                <button onClick={this.useThemeDefault}>Use Theme Defeault</button>
-                <div>
-                    Count: {counter}
+            <HashRouter>
+                <div className="App">
+                    <Header />
+                    <p className="App-intro">
+                        Gotta <code>catch'em</code> all!!
+                    </p>
+                    <div>
+                        <div>
+                            Count: {counter}
+                        </div>
+                        <button onClick={this.handleUp}>Up</button>
+                        <button onClick={this.handleUpAsync}>Up Async</button>
+                        <button onClick={this.handleDn}>Dn</button>
+                    </div>
+                    <Pages />
                 </div>
-                <button onClick={this.handleUp}>Up</button>
-                <button onClick={this.handleUpAsync}>Up Async</button>
-                <button onClick={this.handleDn}>Dn</button>
-            </div>
+            </HashRouter>
         )
     }
 }
