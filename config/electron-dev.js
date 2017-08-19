@@ -23,7 +23,6 @@ module.exports = function (env) {
         devtool: 'cheap-module-source-map',
         entry: {
             background: './src/electron/background/index.js',
-            app: './src/electron/app/index.js',
             dashboard: './src/electron/dashboard/index.js'
         },
         output: {

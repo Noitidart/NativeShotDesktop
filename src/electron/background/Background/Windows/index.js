@@ -9,7 +9,7 @@ import type { Shape as WindowsShape } from '../../../flows/windows'
 // WindowNames is defined by keys here:
 const WINDOW_INFOS:WindowInfos = {
     DASHBOARD: {
-        url: getFilePath('app', 'index.html'),
+        url: getFilePath('dashboard', 'index.html'),
         noMenu: true,
         backgroundColor: '#CCCCCC',
         width: 600,

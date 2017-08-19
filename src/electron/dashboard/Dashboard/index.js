@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 
 import { up, upAsync, dn } from '../../flows/counter'
 
+import './theme-default.css'
+import './index.css'
+
 import type { Shape as CounterShape } from '../../flows/counter'
 
 type Props = {
@@ -13,11 +16,11 @@ type State = {
     theme?: string
 }
 
-class App extends Component<void, Props, State> {
+class Dashboard extends Component<void, Props, State> {
     state = {
         theme: undefined
     }
-    useThemeB = () => this.setState(()=>({ theme:'./theme-b' }));
+    useThemeB = () => this.setState(()=>({ theme:'./Dashboard/theme-b' }));
     useThemeDefault = () => this.setState(()=>({ theme:undefined }));
     handleUp = () => this.props.dispatch(up());
     handleUpAsync = () => this.props.dispatch(upAsync(6));
@@ -44,4 +47,4 @@ class App extends Component<void, Props, State> {
     }
 }
 
-export default App
+export default Dashboard
