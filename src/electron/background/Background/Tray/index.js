@@ -10,20 +10,21 @@ import { WINDOW_REFS } from '../Windows'
 import type { Shape as CoreShape } from '../../../flows/core'
 
 let TRAY = null;
-
+let DISPATCH;
 function init(dispatch, core: CoreShape) {
     console.log('INIT TRAY');
     if (TRAY) throw new Error('Tray is already initailized!');
 
+    DISPATCH = dispatch;
+
     TRAY = new Tray(getFilePath('icons', 'icon16.png'));
 
-    const launchDashboard = handleClick.bind(null, dispatch);
     TRAY.on('click', launchDashboard);
 
     const menu = Menu.buildFromTemplate([
-        { label:'Settings', click:launchDashboard },
+        { label:'Settings', click:launchSettings },
         { label:'Dashboard', click:launchDashboard },
-        { label:'Quit', click:handleQuit.bind(null, dispatch) }
+        { label:'Quit', click:handleQuit }
     ]);
 
     TRAY.setContextMenu(menu);
@@ -37,9 +38,9 @@ function uninit() {
     TRAY = null;
 }
 
-function handleClick(dispatch/*, e*/) {
+function launchDashboard() {
 
-    dispatch(showWindow('DASHBOARD'));
+    DISPATCH(showWindow('DASHBOARD'));
 
     // because kicking of showWindow action will not do anything, as state really doest change, i do this redux bypass HACK:
     const window = WINDOW_REFS.DASHBOARD;
@@ -49,8 +50,20 @@ function handleClick(dispatch/*, e*/) {
     }
 }
 
-function handleQuit(dispatch) {
-    dispatch(quit());
+function launchSettings() {
+    DISPATCH(showWindow('DASHBOARD', {
+        url: getFilePath('dashboard', 'index.html#settings')
+    }));
+    // redux bypass HACK:
+    const window = WINDOW_REFS.DASHBOARD;
+    if (window) {
+        window.show();
+        window.loadURL();
+    }
+}
+
+function handleQuit() {
+    DISPATCH(quit());
 }
 
 export { init, uninit }
