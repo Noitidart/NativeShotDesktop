@@ -37,7 +37,10 @@ type WindowInfos = {
 type WindowRefs = { [WindowName]:* };
 const WINDOW_REFS:WindowRefs = {}; // to hold to references
 
+let DISPATCH;
+
 function update(windows: WindowsShape, windowsOld: WindowsShape={}, dispatch) {
+    DISPATCH = dispatch;
     // default on windowsOld because on mount it is undefined
 
     // state here is windowState
@@ -69,7 +72,7 @@ function update(windows: WindowsShape, windowsOld: WindowsShape={}, dispatch) {
             if (url) window.loadURL(url);
             if (url) window.webContents.openDevTools(); // DEBUG: remove on build console.log(bleh)
             if (noMenu) window.setMenu(null);
-            window.on('close', handleClose.bind(null, dispatch, name));
+            window.on('close', blockClose);
         }
     }
 
@@ -77,16 +80,22 @@ function update(windows: WindowsShape, windowsOld: WindowsShape={}, dispatch) {
     for (const name of Object.keys(windowsOld)) {
         if (!(name in windows)) {
             const window = WINDOW_REFS[name];
-            window.destroy();
+            window.close(); // NOTE: assuming that content does NOT block close with `onbeforeunload`
             delete WINDOW_REFS[name];
         }
     }
 
 }
 
-function handleClose(dispatch, name, e) {
+function blockClose(e) {
     e.preventDefault();
-    dispatch(closeWindow(name));
+    for (const [name, window] of Object.entries(WINDOW_REFS)) {
+        if (window === e.sender) {
+            window.removeListener('close', blockClose);
+            DISPATCH(closeWindow(name));
+            break;
+        }
+    }
 }
 
 export type { WindowName }
