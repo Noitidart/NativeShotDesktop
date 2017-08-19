@@ -21,8 +21,9 @@ function init(dispatch, core: CoreShape) {
     TRAY.on('click', launchDashboard);
 
     const menu = Menu.buildFromTemplate([
-        { label: 'Dashboard', click:launchDashboard },
-        { label: 'Quit', click:handleQuit.bind(null, dispatch) }
+        { label:'Settings', click:launchDashboard },
+        { label:'Dashboard', click:launchDashboard },
+        { label:'Quit', click:handleQuit.bind(null, dispatch) }
     ]);
 
     TRAY.setContextMenu(menu);
