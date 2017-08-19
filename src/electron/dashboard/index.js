@@ -12,3 +12,8 @@ window.addEventListener('DOMContentLoaded', async function() {
         'counter'
     ]);
 }, false);
+
+type Endpoints = {
+    loadSettings?: () => void
+}
+export const ENDPOINTS:Endpoints = {};

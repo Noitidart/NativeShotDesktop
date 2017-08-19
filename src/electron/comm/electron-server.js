@@ -31,6 +31,10 @@ export class Server extends Base {
         // aClientId is aChannelOrChannelId
         // webext channels does not support transfering
         // console.log('doing send on channel:', channel, 'payload:', payload); // this.channels[channel].send
+        if (!this.channels[channel]) { // this is custom block, where channel can be webContents. because for me to send message to BrowserWindow I am doing `callInChannel(window.webContents, ...)`
+            // console.log('channel was not a channel! maybe it was a "webContents" lets test, channel:', channel);
+            channel = this.getChannelFromWebContent(channel);
+        }
         this.channels[channel].send(channel, payload);
     }
     getControllerPayload(e, payload) {
@@ -70,7 +74,7 @@ export class Server extends Base {
         ipcMain.on(CONNECT_REQUEST, this.connector);
     }
     // custom config - specific to this class
-    channels = {} // key is channel, value is channel
+    channels = {} // key is channel, value is webContent
     broadcastMessage(groupName, method, arg, callback) {
         // callback triggers for each channel
         for (const channel of Object.keys(this.channels)) {

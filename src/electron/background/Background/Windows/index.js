@@ -22,6 +22,8 @@ const WINDOW_INFOS:WindowInfos = {
     }
 }
 
+const SHOULD_LOAD_SETTINGS = { value:false };
+
 type WindowName = string; // $Keys<typeof WINDOW_INFOS>; // for some reason this $Keys thing isnt working
 
 type RelativeUri = string;
@@ -67,8 +69,10 @@ function update(windows: WindowsShape, windowsOld: WindowsShape={}, dispatch) {
         } else {
             // newly created
             // if it didnt exist, and it was asked to go to "HIDDEN" redux reducer ignores its, so safe to assume that it is NOT in here with WINDOW_STATES.VISIBLE
-            const { noMenu, url, ...browserWindowConfig } = WINDOW_INFOS[name];
+            const { noMenu, ...browserWindowConfig } = WINDOW_INFOS[name];
+            let { url } = WINDOW_INFOS[name]; // HACK: moved url out of const for SHOULD_LOAD_SETTINGS
             const window = WINDOW_REFS[name] = new BrowserWindow(browserWindowConfig);
+            if (url && SHOULD_LOAD_SETTINGS.value) { url += '#settings'; SHOULD_LOAD_SETTINGS.value = false; } // HACK:
             if (url) window.loadURL(url);
             if (url) window.webContents.openDevTools(); // DEBUG: remove on build console.log(bleh)
             if (noMenu) window.setMenu(null);
@@ -99,4 +103,5 @@ function blockClose(e) {
 }
 
 export type { WindowName }
+export { SHOULD_LOAD_SETTINGS }
 export { update, WINDOW_REFS }

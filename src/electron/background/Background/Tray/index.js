@@ -7,10 +7,14 @@ import { showWindow } from '../../../flows/windows'
 import { quit } from '../../../flows/quit'
 import { WINDOW_REFS } from '../Windows'
 
+import { callInChannel } from '../../' // HACK:
+import { SHOULD_LOAD_SETTINGS } from '../Windows'
+
 import type { Shape as CoreShape } from '../../../flows/core'
 
 let TRAY = null;
 let DISPATCH;
+
 function init(dispatch, core: CoreShape) {
     console.log('INIT TRAY');
     if (TRAY) throw new Error('Tray is already initailized!');
@@ -51,14 +55,14 @@ function launchDashboard() {
 }
 
 function launchSettings() {
-    DISPATCH(showWindow('DASHBOARD', {
-        url: getFilePath('dashboard', 'index.html#settings')
-    }));
     // redux bypass HACK:
     const window = WINDOW_REFS.DASHBOARD;
     if (window) {
         window.show();
-        window.loadURL();
+        callInChannel(window.webContents, 'ENDPOINTS.loadSettings');
+    } else {
+        SHOULD_LOAD_SETTINGS.value = true;
+        DISPATCH(showWindow('DASHBOARD'));
     }
 }
 
