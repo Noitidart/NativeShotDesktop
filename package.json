@@ -3,7 +3,7 @@
   "name": "nativeshot-desktop",
   "version": "0.0.0",
   "description": "Set personal system wide hotkeys to trigger customizable actions",
-  "main": "dist/electron/background/index.bundle.js",
+  "main": "dist/electron/background.bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:webext": "webpack --env=webext -p",

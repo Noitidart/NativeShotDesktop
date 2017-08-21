@@ -23,7 +23,7 @@ function init(dispatch, core: CoreShape) {
 
     DISPATCH = dispatch;
 
-    TRAY = new Tray(getFilePath('icons', 'icon16.png'));
+    TRAY = new Tray(getFilePath(ICON));
 
     TRAY.on('click', launchDashboard);
 

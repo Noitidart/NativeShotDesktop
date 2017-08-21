@@ -27,7 +27,7 @@ module.exports = function (env) {
         },
         output: {
             path: path.join(__dirname, '../dist/electron'),
-            filename: '[name]/index.bundle.js'
+            filename: '[name].bundle.js'
         },
         node: {
             __dirname: false,
@@ -42,15 +42,11 @@ module.exports = function (env) {
                 { test:/\.js$/, exclude:/node_modules/, loader:'eslint-loader', enforce:'pre' },
                 { test:/\.css$/, exclude:/node_modules/, use:['style-loader', 'css-loader'] },
                 { test:/\.js$/, exclude:/node_modules/, loader:'babel-loader' },
-                { test:/\.(png|jpg|svg|ttf)$/, loader:'file-loader', options:{ publicPath:'../', name:'[name].[ext]' } }
+                { test:/\.(png|jpg|svg|ttf|html)$/, loader:'file-loader' }
             ]
         },
         plugins: [
-            new webpack.IgnorePlugin(new RegExp("^(fs|ipc)$")),
-            new CopyWebpackPlugin([
-                { from: './src/electron', ignore: ['*.js', '*.css', '*.ttf'], transform: (content, path) => /(svg|png|jpeg|jpg|gif)$/i.test(path) ? content : content.toString().replace(new RegExp('(?:' + Object.keys(PROPS.replace).join('|') + ')', 'g'), match => PROPS.replace[match]) },
-                // { from: './src/electron/vendor', to: 'vendor/' }
-            ])
+            new webpack.IgnorePlugin(new RegExp("^(fs|ipc)$"))
         ],
         target: 'electron',
         externals: [

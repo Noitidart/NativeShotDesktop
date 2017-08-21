@@ -3,15 +3,13 @@
 import path from 'path'
 import url from 'url'
 
-const ROOT_PATH = path.dirname(__dirname);
-
 export function getFilePath(...strs) {
-    return path.join(ROOT_PATH, ...strs);
+    return path.join(__dirname, ...strs);
 }
 
 export function getFileUrl(...strs) {
     return url.format({
-        pathname: path.join(ROOT_PATH, ...strs),
+        pathname: path.join(__dirname, ...strs),
         protocol: 'file:',
         slashes: true
     });

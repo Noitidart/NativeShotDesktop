@@ -4,19 +4,20 @@ import { BrowserWindow } from 'electron'
 import { getFilePath } from '../../utils'
 import { closeWindow, WINDOW_STATES } from '../../../flows/windows'
 
-import type { Shape as WindowsShape } from '../../../flows/windows'
-
 import ICON from '../../../icons/icon16.png'
+import DASHBOARD_PAGE from '../../../dashboard/index.html'
+
+import type { Shape as WindowsShape } from '../../../flows/windows'
 
 // WindowNames is defined by keys here:
 const WINDOW_INFOS:WindowInfos = {
     DASHBOARD: {
-        url: getFilePath('dashboard', 'index.html'),
+        url: getFilePath(DASHBOARD_PAGE),
         noMenu: true,
         backgroundColor: '#CCCCCC',
         width: 600,
         height: 600,
-        icon: getFilePath('icons', 'icon16.png'),
+        icon: getFilePath(ICON),
         title: 'NativeShot | Dashboard'
     },
     KEEPALIVE: {
