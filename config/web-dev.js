@@ -15,8 +15,7 @@ module.exports = function (env) {
         entry: ['./src/web/index.js'],
         output: {
             path: path.join(__dirname, '../dist/web'),
-            filename: 'index.bundle.js',
-            publicPath: '/static/'
+            filename: 'index.bundle.js'
         },
         resolve: {
             extensions: ['.js']
@@ -29,14 +28,15 @@ module.exports = function (env) {
                 // { test:/\.css$/, exclude:/node_modules/, loader:'css-var-fallback-loader', enforce:'pre', options:{ default_theme:'../src/web/theme-a.css' } },
                 { test:/\.js$/, exclude:/node_modules/, loader:'eslint-loader', enforce:'pre' },
                 { test:/\.css$/, exclude:/node_modules/, use:['style-loader', 'css-loader'] },
-                { test:/\.js$/, exclude:/node_modules/, loader:'babel-loader' }
+                { test:/\.js$/, exclude:/node_modules/, loader:'babel-loader' },
+                { test:/\.(png|jpg|svg|ttf)$/, loader:'file-loader' }
             ]
         },
         plugins: [
             new CopyWebpackPlugin([
                 { from:'./src/web' }
             ], {
-                ignore: ['*.js', '*.css']
+                ignore: ['*.js', '*.css', '*.png', '*.jpg', '*.svg', '*.ttf']
             })
         ]
     }

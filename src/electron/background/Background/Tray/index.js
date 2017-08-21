@@ -10,6 +10,8 @@ import { WINDOW_REFS } from '../Windows'
 import { callInChannel } from '../../' // HACK:
 import { SHOULD_LOAD_SETTINGS } from '../Windows'
 
+import ICON from '../../../icons/icon16.png'
+
 import type { Shape as CoreShape } from '../../../flows/core'
 
 let TRAY = null;

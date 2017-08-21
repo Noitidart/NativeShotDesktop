@@ -6,6 +6,8 @@ import { closeWindow, WINDOW_STATES } from '../../../flows/windows'
 
 import type { Shape as WindowsShape } from '../../../flows/windows'
 
+import ICON from '../../../icons/icon16.png'
+
 // WindowNames is defined by keys here:
 const WINDOW_INFOS:WindowInfos = {
     DASHBOARD: {

@@ -34,7 +34,8 @@ module.exports = function (env) {
                 { test:/\.js$/, exclude:/node_modules/, loader:'string-replace-loader', query:{ multiple:Object.entries(PROPS.replace).map(([search, replace]) => ({search, replace, flags:'g'})) }, enforce:'pre' },
                 { test:/\.js$/, exclude:/node_modules/, loader:'string-replace-loader?search=^.*?console\.[a-zA-Z].*?$&flags=gm&replace=', enforce:'pre' },
                 { test:/\.css$/, exclude:/node_modules/, use:['style-loader', 'css-loader'] },
-                { test:/\.js$/, exclude:/node_modules/, loader:'babel-loader' }
+                { test:/\.js$/, exclude:/node_modules/, loader:'babel-loader' },
+                { test:/\.(png|jpg|svg|ttf)$/, loader:'file-loader', options:{ publicPath:'../' } }
             ]
         },
         plugins: [

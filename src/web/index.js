@@ -4,6 +4,7 @@ import { render } from 'react-dom'
 import shallowEqual from 'recompose/shallowEqual'
 import { isObject } from 'cmn/all'
 
+import './fonts/RobotoSlab/index.css'
 import './theme-a.default.css'
 import './index.css'
 
@@ -21,6 +22,7 @@ class App extends Component {
         return (
             <div>
                 {theme && <link href={theme+'.css'} rel="stylesheet" /> }
+                <h1>Welcome</h1>
                 {arr}
                 <button onClick={this.useThemeB}>Use Theme B</button>
                 <button onClick={this.useThemeDefault}>Use Theme Defeault</button>
