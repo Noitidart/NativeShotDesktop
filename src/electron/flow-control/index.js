@@ -4,7 +4,6 @@ import { createStore, combineReducers, applyMiddleware, compose } from 'redux'
 import { persistStore, autoRehydrate } from 'redux-persist'
 import { AsyncNodeStorage } from 'redux-persist-node-storage'
 import createSagaMiddleware from 'redux-saga'
-import { reducer as form } from 'redux-form'
 import { fork, all } from 'redux-saga/effects'
 
 import { getFilePath } from '../background/utils'
@@ -29,7 +28,6 @@ export type Shape = {
     core: CoreShape,
     counter: CounterShape,
     elements: ElementsShape,
-    form: *,
     quit: QuitShape,
     rehydrated: RehydratedShape,
     tray: TrayShape,
@@ -37,7 +35,7 @@ export type Shape = {
 }
 
 const sagaMiddleware = createSagaMiddleware();
-const reducers = combineReducers({ core, counter, elements, form, quit, rehydrated, tray, windows });
+const reducers = combineReducers({ core, counter, elements, quit, rehydrated, tray, windows });
 const sagas = [ ...counterSagas ];
 
 const store = createStore(reducers, compose(applyMiddleware(sagaMiddleware), autoRehydrate()));
@@ -50,7 +48,7 @@ sagaMiddleware.run(rootSaga);
 console.log('getFilePath(storage):', getFilePath('storage'));
 
 export const persistor = persistStore(store, {
-    // blacklist: ['elements', 'form', 'rehydrated'],
+    // blacklist: ['elements', 'rehydrated'],
     whitelist: ['counter'],
     storage: new AsyncNodeStorage(getFilePath('..', 'storage'))
 });
