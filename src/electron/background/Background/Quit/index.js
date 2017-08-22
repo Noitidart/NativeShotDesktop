@@ -2,7 +2,7 @@
 
 import { app } from 'electron'
 
-import type { Shape as QuitShape } from '../../../flows/quit'
+import type { Shape as QuitShape } from '../../../flow-control/quit'
 
 let TRAY = null;
 

@@ -4,10 +4,10 @@ import * as Tray from './Tray'
 import * as Windows from './Windows'
 import Quit from './Quit'
 
-import type { Shape as TrayShape } from '../../flows/tray'
-import type { Shape as CoreShape } from '../../flows/core'
-import type { Shape as WindowsShape } from '../../flows/windows'
-import type { Shape as QuitShape } from '../../flows/quit'
+import type { Shape as TrayShape } from '../../flow-control/tray'
+import type { Shape as CoreShape } from '../../flow-control/core'
+import type { Shape as WindowsShape } from '../../flow-control/windows'
+import type { Shape as QuitShape } from '../../flow-control/quit'
 
 type State = {
     tray: TrayShape,

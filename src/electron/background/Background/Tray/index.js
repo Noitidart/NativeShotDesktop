@@ -3,8 +3,8 @@
 import { Tray, Menu } from 'electron'
 
 import { getFilePath } from '../../utils'
-import { showWindow } from '../../../flows/windows'
-import { quit } from '../../../flows/quit'
+import { showWindow } from '../../../flow-control/windows'
+import { quit } from '../../../flow-control/quit'
 import { WINDOW_REFS } from '../Windows'
 
 import { callInChannel } from '../../' // HACK:
@@ -12,7 +12,7 @@ import { SHOULD_LOAD_SETTINGS } from '../Windows'
 
 import ICON from '../../../icons/icon16.png'
 
-import type { Shape as CoreShape } from '../../../flows/core'
+import type { Shape as CoreShape } from '../../../flow-control/core'
 
 let TRAY = null;
 let DISPATCH;

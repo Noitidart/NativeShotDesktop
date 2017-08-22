@@ -2,12 +2,12 @@
 
 import { BrowserWindow } from 'electron'
 import { getFilePath } from '../../utils'
-import { closeWindow, WINDOW_STATES } from '../../../flows/windows'
+import { closeWindow, WINDOW_STATES } from '../../../flow-control/windows'
 
 import ICON from '../../../icons/icon16.png'
 import DASHBOARD_PAGE from '../../../dashboard/index.html'
 
-import type { Shape as WindowsShape } from '../../../flows/windows'
+import type { Shape as WindowsShape } from '../../../flow-control/windows'
 
 // WindowNames is defined by keys here:
 const WINDOW_INFOS:WindowInfos = {
