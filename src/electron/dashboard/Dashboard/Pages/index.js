@@ -1,7 +1,7 @@
 import React, { PureComponent } from 'react'
 import { Route, Switch, withRouter } from 'react-router-dom'
 
-import { ENDPOINTS } from '../../'
+import { ENDPOINTS } from '../../connect'
 
 import GalleryPage from './GalleryPage'
 import SettingsPage from './SettingsPage'

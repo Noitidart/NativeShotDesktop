@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { render } from 'react-dom'
 
 import shallowEqual from 'recompose/shallowEqual'
-import { isObject } from 'cmn/all'
+import { isObject } from 'cmn/lib/all'
 
 import './fonts/RobotoSlab/index.css'
 import './theme-a.default.css'

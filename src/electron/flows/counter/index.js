@@ -1,4 +1,4 @@
-import { wait } from 'cmn/all'
+import { wait } from 'cmn/lib/all'
 import { takeEvery, take, call, put, select } from 'redux-saga/effects'
 
 export type Shape = number;

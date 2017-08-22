@@ -4,7 +4,7 @@ import { app, Tray } from 'electron'
 
 import { Server as ElectronServer } from '../comm/electron-server'
 import { callInTemplate } from '../comm/comm'
-import { Server as ReduxServer } from '../comm/redux'
+import ReduxServer from '../comm/redux'
 import store from '../flows'
 
 import Background from './Background'
