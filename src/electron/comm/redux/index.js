@@ -1,6 +1,7 @@
 // TODO: is this todo on the right comment still valid? 082117 // TODO: figure out how to make redux-offline only persist some keys, like there is no reason to persist messages
 import { combineReducers, createStore } from 'redux'
 import { pick, arrayToObject } from 'cmn/lib/all'
+import {  depth0Or1Equal } from 'cmn/lib/recompose'
 
 
 import { addElement } from './elements'
@@ -23,14 +24,16 @@ class Server {
         // console.log('IN SERVER RENDER');
         const state = this.store.getState();
         const { stateOld={} } = this;
+        this.stateOld = state;
+
         const { elements } = state;
         const { elements:elementsOld } = stateOld;
 
         const changed = {};
         for (const key of Object.keys(state)) {
-            // console.log(`comparing if "${key}" changed in state`);
+            console.log(`comparing if "${key}" changed in state, now:`, state[key], 'old:', stateOld[key]);
             // if (!shallowEqualDepth(state[key], stateOld[key])) changed[key] = true;
-            if (state[key] !== stateOld[key]) changed[key] = true; // as in server side, i can do reference checking, as i am careful in the reducers to return the same state if no change is needed
+            if (!depth0Or1Equal(state[key], stateOld[key])) changed[key] = true; // as in server side, i can do reference checking, as i am careful in the reducers to return the same state if no change is needed
             // console.log(key in changed ? 'yes it changed!' : 'no it didnt change', 'state:', state[key], 'stateOld:', stateOld[key]);
         }
 
@@ -75,8 +78,6 @@ class Server {
             }
             // else { console.log('will not render background element as no change'); }
         }
-
-        this.stateOld = state;
     }
     addElement = (aArg, aReportProgress/*, ...args*/) => {
         // console.log('in addElement, aArg:', aArg, 'aReportProgress:', aReportProgress, 'args:', args);
