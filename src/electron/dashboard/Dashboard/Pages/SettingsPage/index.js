@@ -8,6 +8,9 @@ class SettingsPage extends PureComponent<void, void, void> {
     render() {
         return (
             <div>
+                <p className="App-intro">
+                    Customize your experience ^_^
+                </p>
                 SettingsPage
             </div>
         )

@@ -2,7 +2,6 @@
 
 body {
     /* font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; */
-    font-family: 'Roboto Slab';
-    font-weight: 400;
+    font-family: var(--main-font-family);
     background: var(--main-bg-color);
 }

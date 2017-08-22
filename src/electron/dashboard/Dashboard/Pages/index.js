@@ -3,14 +3,16 @@ import { Route, Switch, withRouter } from 'react-router-dom'
 
 import { ENDPOINTS } from '../../connect'
 
+import CounterPage from './CounterPage'
 import GalleryPage from './GalleryPage'
 import SettingsPage from './SettingsPage'
-import AuthPage from './AuthPage'
+import ServicesPage from './ServicesPage'
 
 const PAGES = [
-    { path:'/',         label:'Gallery',        Body:GalleryPage  },
-    { path:'/settings', label:'Settings',       Body:SettingsPage },
-    { path:'/auth',     label:'Authentication', Body:AuthPage     }
+    { path:'/',         label:'Gallery',  Body:GalleryPage  },
+    { path:'/counter',  label:'Counter',  Body:CounterPage  },
+    { path:'/services', label:'Services', Body:ServicesPage },
+    { path:'/settings', label:'Settings', Body:SettingsPage }
 ]
 
 type Props = {

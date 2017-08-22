@@ -1,9 +1,9 @@
 import React, { PureComponent } from 'react'
 
-import proxy from '../../connect'
-import { up, upAsync, dn } from '../../../flow-control/counter'
+import proxy from '../../../../connect'
+import { up, upAsync, dn } from '../../../../../flow-control/counter'
 
-import type { Shape as CounterShape } from '../../../flow-control/counter'
+import type { Shape as CounterShape } from '../../../../../flow-control/counter'
 
 type Props = {
     // comm/redux

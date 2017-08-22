@@ -2,19 +2,21 @@
 
 import React, { PureComponent } from 'react'
 
+import Counter from './Counter'
+
 import './index.css'
 
-class GalleryPage extends PureComponent<void, void, void> {
+class CounterPage extends PureComponent<void, void, void> {
     render() {
         return (
             <div>
                 <p className="App-intro">
-                    A history of all your screenshots
+                    Let's count... 1.. 2.. 3..
                 </p>
-                GalleryPage
+                <Counter />
             </div>
         )
     }
 }
 
-export default GalleryPage
+export default CounterPage

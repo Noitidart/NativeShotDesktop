@@ -6,7 +6,6 @@ import store from './subflow'
 
 import Header from './Header'
 import Pages from './Pages'
-import Counter from './Counter'
 
 import './theme-default.css'
 import './index.css'
@@ -19,10 +18,6 @@ class Dashboard extends PureComponent<void, void, void> {
                 <HashRouter>
                     <div className="App">
                         <Header />
-                        <p className="App-intro">
-                            Gotta <code>catch'em</code> all!!
-                        </p>
-                        <Counter />
                         <Pages />
                     </div>
                 </HashRouter>

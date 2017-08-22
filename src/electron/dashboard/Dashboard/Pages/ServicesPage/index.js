@@ -4,17 +4,17 @@ import React, { PureComponent } from 'react'
 
 import './index.css'
 
-class GalleryPage extends PureComponent<void, void, void> {
+class ServicesPage extends PureComponent<void, void, void> {
     render() {
         return (
             <div>
                 <p className="App-intro">
-                    A history of all your screenshots
+                    Manage cloud options that you want to upload to
                 </p>
-                GalleryPage
+                ServicesPage
             </div>
         )
     }
 }
 
-export default GalleryPage
+export default ServicesPage
