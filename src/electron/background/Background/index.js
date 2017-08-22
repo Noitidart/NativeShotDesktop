@@ -1,5 +1,7 @@
 // @flow
 
+import { depth0Or1Equal } from 'cmn/lib/recompose'
+
 import * as Tray from './Tray'
 import * as Windows from './Windows'
 import Quit from './Quit'
@@ -22,7 +24,7 @@ function Background(state: State, stateOld: State, dispatch) {
 
     const { tray } = state;
     const { tray:trayOld } = stateOld;
-    if (tray !== trayOld) {
+    if (!depth0Or1Equal(tray, trayOld)) {
         if (tray) {
             Tray.init(dispatch, state.core);
         } else {
@@ -32,7 +34,7 @@ function Background(state: State, stateOld: State, dispatch) {
 
     const { windows } = state;
     const { windows:windowsOld } = stateOld;
-    if (windows !== windowsOld) { // safe to do reference test here to detect change as this is in Background and Server is in background
+    if (!depth0Or1Equal(windows, windowsOld)) {
         Windows.update(windows, windowsOld, dispatch);
     }
 

@@ -1,3 +1,12 @@
+type Serializable = any; // but really not any, its anything that is serializable
+type WantedState = { [string]:Serializable }
+type Shape = Array<{
+    id: number,
+    wanted: string[],
+    setState: WantedState => void
+}>
+const INITIAL = [];
+
 // ACTIONS and REDUCER
 const ADD_ELEMENT = 'ADD_ELEMENT';
 export function addElement(id, wanted, setState) {
@@ -20,7 +29,7 @@ export function removeElement(id, dontUnmount) {
     }
 }
 
-export default function reducer(state=[], action) {
+export default function reducer(state=INITIAL, action) {
     const { type, ...rest } = action;
     switch(type) {
         case ADD_ELEMENT: {

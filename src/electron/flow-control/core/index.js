@@ -1,3 +1,4 @@
+// @flow
 import os from  'os'
 
 export type Shape = {
@@ -17,9 +18,14 @@ const INITIAL = {
         locales: ['en-us']
         // // startup: string; enum[STARTUP, UPGRADE, DOWNGRADE, INSTALL] - startup_reason
 	}
-}
+};
 
-export default function core(state:Shape=INITIAL, action) {
+const A = ([actionType]: string[]) => 'CORE_' + actionType; // Action type prefixer
+
+//
+type Action = {};
+
+export default function reducer(state: Shape = INITIAL, action:Action) {
     switch(action.type) {
         default: return state;
     }

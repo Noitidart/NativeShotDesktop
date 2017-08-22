@@ -46,7 +46,7 @@ module.exports = function (env) {
             ]
         },
         plugins: [
-            new webpack.IgnorePlugin(new RegExp("^(fs|ipc)$"))
+            new webpack.IgnorePlugin(new RegExp("^(ipc)$"))
         ],
         target: 'electron',
         externals: [
