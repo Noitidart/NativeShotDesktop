@@ -1,6 +1,6 @@
-import { Client as ElectronClient } from '../comm/electron-client'
-import { callInTemplate } from '../comm/comm'
-import proxyFactory from '../comm/redux/proxy-hoc'
+import { Client as ElectronClient } from 'cmn/lib/comm/electron-client'
+import { callInTemplate } from 'cmn/lib/comm/comm'
+import proxyFactory from 'cmn/lib/comm/redux/proxy-hoc'
 
 type Endpoints = {
     loadSettings?: () => void

@@ -2,9 +2,9 @@
 
 import { app, Tray } from 'electron'
 
-import { Server as ElectronServer } from '../comm/electron-server'
-import { callInTemplate } from '../comm/comm'
-import ReduxServer from '../comm/redux'
+import { Server as ElectronServer } from 'cmn/lib/comm/electron-server'
+import { callInTemplate } from 'cmn/lib/comm/comm'
+import ReduxServer from 'cmn/lib/comm/redux'
 import store from '../flow-control'
 
 import Background from './Background'
